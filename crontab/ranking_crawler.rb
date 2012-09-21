@@ -8,10 +8,6 @@ class RankingCrawler
     doc = Hpricot(open("https://play.google.com/store/apps/collection/topselling_free"))
     
     s = doc.search("ul.snippet-list li.goog-inline-block")
-    s[0]
-    s[1]
-    s[24]
-    binding.pry
   end
   
   def self.create_rss
