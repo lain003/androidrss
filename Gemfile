@@ -41,3 +41,6 @@ group :test, :development do
   gem "pry"
 end
 gem 'passenger'
+
+gem 'execjs'
+gem 'therubyracer'
