@@ -44,3 +44,4 @@ gem 'passenger'
 
 gem 'execjs'
 gem 'therubyracer'
+gem 'rb-readline'
