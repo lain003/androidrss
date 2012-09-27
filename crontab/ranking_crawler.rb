@@ -4,6 +4,9 @@ require 'open-uri'
 require 'hpricot'
 require 'pry'
 require 'rexml/document'
+require 'openssl'
+
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
 class RankingCrawler
   def self.search
@@ -28,7 +31,7 @@ class RankingCrawler
       elem = rank_in_app.search("a.title").first
       item = channel.add_element("item")
       item.add_element("title").add_text elem["title"]
-      item.add_element("link").add_text "https://play.google.com/" + elem["href"]
+      item.add_element("link").add_text "https://play.google.com" + elem["href"]
       item.add_element("description").add_text rank_in_app.search("p.snippet-content").text
     end
     
