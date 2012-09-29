@@ -5,16 +5,21 @@ require 'hpricot'
 require 'pry'
 require 'rexml/document'
 require 'openssl'
+require "rss"
+
+require "active_record"
+require_relative "./../app/models/news"
 
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
-class RankingCrawler
-  def self.search
-    doc = Hpricot(open("https://play.google.com/store/apps/collection/topselling_free"))
-    
-    s = doc.search("ul.snippet-list li.goog-inline-block")
-  end
-  
+ActiveRecord::Base.establish_connection(    
+  :adapter => "sqlite3",
+  :database => "./../db/development.sqlite3",
+  :pool => 5,
+  :timeout => 5000
+)
+
+class RankingCrawler < ActiveRecord::Base
   def self.create_rss
     rank_in_apps = Hpricot(open("https://play.google.com/store/apps/collection/topselling_free")).search("ul.snippet-list li.goog-inline-block")
     
@@ -41,7 +46,14 @@ class RankingCrawler
     output_file.write(rss.to_s)
     output_file.close
   end
+  
+  def self.save_rss_to_db
+    rss = RSS::Parser.parse("http://49.212.192.71/android_rss.xml")
+    rss.items.map{ |rss_news|
+      News.new(:title => rss_news.title, :url => rss_news.link,:description => rss_news.description).save
+    }
+  end
 end
 
-#RankingCrawler.search
 RankingCrawler.create_rss
+RankingCrawler.save_rss_to_db
