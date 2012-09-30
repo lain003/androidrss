@@ -11,10 +11,11 @@ require "active_record"
 require_relative "./../app/models/news"
 
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+$root_directory_path = File.expand_path(__FILE__)[0..File.expand_path(__FILE__).rindex("/")] + "../"
 
 ActiveRecord::Base.establish_connection(    
   :adapter => "sqlite3",
-  :database => "./../db/development.sqlite3",
+  :database => $root_directory_path + "db/development.sqlite3",
   :pool => 5,
   :timeout => 5000
 )
@@ -41,8 +42,8 @@ class RankingCrawler < ActiveRecord::Base
     end
     
     rss.elements["rss"].add_element(channel)
-    
-    output_file = File.open("../public/android_rss.xml", "w")
+
+    output_file = File.open($root_directory_path + "public/android_rss.xml", "w")
     output_file.write(rss.to_s)
     output_file.close
   end
