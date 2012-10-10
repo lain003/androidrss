@@ -9,6 +9,7 @@ require "rss"
 
 require "active_record"
 require_relative "./../app/models/news"
+require_relative "./../app/models/ranking.rb"
 
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 $root_directory_path = File.expand_path(__FILE__)[0..File.expand_path(__FILE__).rindex("/")] + "../"
@@ -50,9 +51,17 @@ class RankingCrawler < ActiveRecord::Base
   
   def self.save_rss_to_db
     rss = RSS::Parser.parse("http://49.212.192.71/android_rss.xml")
+    
+    last_ranking = Ranking.last
+    ranking = Ranking.new(:genre => nil)
+    rank = 1
     rss.items.map{ |rss_news|
-      News.new(:title => rss_news.title, :url => rss_news.link,:description => rss_news.description).save
+      news = News.new(:title => rss_news.title, :url => rss_news.link,:description => rss_news.description,:rank => rank,:last_ranking => last_ranking)
+      ranking.news << news
+      news.save
+      rank += 1
     }
+    ranking.save
   end
 end
 

@@ -2,8 +2,8 @@ class NewsController < ApplicationController
   # GET /news
   # GET /news.json
   def index
-    @news = News.where{created_at >= 1.days.ago}
-
+    @news = News.where{created_at >= 1.hours.ago}
+    
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @news }

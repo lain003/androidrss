@@ -1,4 +1,6 @@
 Androidrss::Application.routes.draw do
+  resources :rankings
+
   resources :news
 
   # The priority is based upon order of creation:
