@@ -50,7 +50,7 @@ class RankingCrawler < ActiveRecord::Base
   end
   
   def self.save_rss_to_db
-    rss = RSS::Parser.parse("http://49.212.192.71/android_rss.xml")
+    rss = RSS::Parser.parse("public/android_rss.xml")
     
     last_ranking = Ranking.last
     ranking = Ranking.new(:genre => nil)
@@ -64,6 +64,6 @@ class RankingCrawler < ActiveRecord::Base
     ranking.save
   end
 end
-
-RankingCrawler.create_rss
-RankingCrawler.save_rss_to_db
+binding.pry
+#RankingCrawler.create_rss
+#RankingCrawler.save_rss_to_db

@@ -46,3 +46,5 @@ gem 'execjs'
 gem 'therubyracer'
 gem 'rb-readline'
 gem "squeel"
+
+gem "twitter-bootstrap-rails"

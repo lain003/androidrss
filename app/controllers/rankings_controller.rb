@@ -2,7 +2,7 @@ class RankingsController < ApplicationController
   # GET /rankings
   # GET /rankings.json
   def index
-    @rankings = Ranking.all
+    @rankings = Ranking.last
 
     respond_to do |format|
       format.html # index.html.erb

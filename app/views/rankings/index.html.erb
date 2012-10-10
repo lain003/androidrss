@@ -1,23 +1,19 @@
 <h1>Listing rankings</h1>
 
-<table>
+<div class="row-fluid">
+<div class="span8 offset2">
+<table class="table table-striped">
+<% @rankings.news.each do |news| %>
   <tr>
-    <th>Genre</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @rankings.each do |ranking| %>
-  <tr>
-    <td><%= ranking.genre %></td>
-    <td><%= link_to 'Show', ranking %></td>
-    <td><%= link_to 'Edit', edit_ranking_path(ranking) %></td>
-    <td><%= link_to 'Destroy', ranking, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  	<td><%= news.rank %></td>
+    <td><%= news.title %></td>
+    <td><%= news.url %></td>
+    <td><%= news.description %></td>
+    <td><%= news.change_rank %></td>
   </tr>
 <% end %>
 </table>
+</div>
+</div>
 
 <br />
-
-<%= link_to 'New Ranking', new_ranking_path %>
