@@ -1,19 +1,33 @@
-<h1>Listing rankings</h1>
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#home">Home</a></li>
+  <li><a href="#profile">Profile</a></li>
+  <li><a href="#messages">Messages</a></li>
+  <li><a href="#settings">Settings</a></li>
+</ul>
+ 
+<div class="tab-content">
+  <div class="tab-pane active" id="home">hoge</div>
+  <div class="tab-pane" id="profile">fuga</div>
+  <div class="tab-pane" id="messages">jya</div>
+  <div class="tab-pane" id="settings">...</div>
+</div>
 
 <div class="row-fluid">
-<div class="span8 offset2">
-<table class="table table-striped">
-<% @rankings.news.each do |news| %>
-  <tr>
-  	<td><%= news.rank %></td>
-    <td><%= news.title %></td>
-    <td><%= news.url %></td>
-    <td><%= news.description %></td>
-    <td><%= news.change_rank %></td>
-  </tr>
-<% end %>
-</table>
-</div>
+	<div class="span8 offset2">
+		<table class="table table-striped">
+			<% @rankings.news.each do |news| %>
+			<tr>
+				<td><%= news.rank %></td>
+				<td><%= news.title %></td>
+				<td><%= news.url %></td>
+				<td><%= news.description %></td>
+				<td><%= news.change_rank %></td>
+			</tr>
+			<% end %>
+		</table>
+	</div>
 </div>
 
 <br />
+
