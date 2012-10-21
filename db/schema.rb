@@ -11,17 +11,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121002101249) do
+ActiveRecord::Schema.define(:version => 20121020060327) do
 
   create_table "news", :force => true do |t|
     t.string   "title"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.text     "description"
     t.string   "url"
     t.integer  "rank"
     t.integer  "change_rank"
     t.integer  "ranking_id"
+    t.string   "thumbnail_url"
   end
 
   create_table "rankings", :force => true do |t|

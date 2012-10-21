@@ -1,31 +1,44 @@
-
-<ul class="nav nav-tabs">
-  <li class="active"><a href="#home">Home</a></li>
-  <li><a href="#profile">Profile</a></li>
-  <li><a href="#messages">Messages</a></li>
-  <li><a href="#settings">Settings</a></li>
-</ul>
- 
 <div class="tab-content">
-  <div class="tab-pane active" id="home">hoge</div>
-  <div class="tab-pane" id="profile">fuga</div>
-  <div class="tab-pane" id="messages">jya</div>
-  <div class="tab-pane" id="settings">...</div>
-</div>
+	<div class="tab-pane active" id="home">
+		<div class="row-fluid">
+			<div class="span8 offset2">
+				<ul class="nav nav-tabs">
+					<li class="active">
+						<a href="#home" data-toggle="tab">Home</a>
+					</li>
+					<li>
+						<a href="#profile" data-toggle="tab">Profile</a>
+					</li>
+					<li>
+						<a href="#messages" data-toggle="tab">Messages</a>
+					</li>
+					<li>
+						<a href="#settings" data-toggle="tab">Settings</a>
+					</li>
+				</ul>
 
-<div class="row-fluid">
-	<div class="span8 offset2">
-		<table class="table table-striped">
-			<% @rankings.news.each do |news| %>
-			<tr>
-				<td><%= news.rank %></td>
-				<td><%= news.title %></td>
-				<td><%= news.url %></td>
-				<td><%= news.description %></td>
-				<td><%= news.change_rank %></td>
-			</tr>
-			<% end %>
-		</table>
+				<table class="table table-striped">
+					<% @rankings.news.each do |news| %>
+					<tr>
+						<td><%= image_tag(news.get_changerank_icon,:size=>"60x60") %></td>
+						<td><%= news.rank %>位</td>
+						<td><%= image_tag (news.thumbnail_url) %></td>
+						<td><%= link_to news.title, news.url %></td>
+						<td><%= news.description %></td>
+					</tr>
+					<% end %>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="tab-pane" id="profile">
+		fuga
+	</div>
+	<div class="tab-pane" id="messages">
+		jya
+	</div>
+	<div class="tab-pane" id="settings">
+		...
 	</div>
 </div>
 

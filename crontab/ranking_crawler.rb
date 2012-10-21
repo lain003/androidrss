@@ -39,9 +39,9 @@ class RankingCrawler < ActiveRecord::Base
       item = channel.add_element("item")
       item.add_element("title").add_text elem["title"]
       item.add_element("link").add_text "https://play.google.com" + elem["href"]
-      item.add_element("description").add_text rank_in_app.search("p.snippet-content").text
+      item.add_element("description").add_text create_descriptiontext_contain_thumbnail(rank_in_app.search(".thumbnail img").first["src"],rank_in_app.search("p.snippet-content").text)
     end
-    
+    binding.pry
     rss.elements["rss"].add_element(channel)
 
     output_file = File.open($root_directory_path + "public/android_rss.xml", "w")
@@ -51,19 +51,28 @@ class RankingCrawler < ActiveRecord::Base
   
   def self.save_rss_to_db
     rss = RSS::Parser.parse("public/android_rss.xml")
-    
     last_ranking = Ranking.last
     ranking = Ranking.new(:genre => nil)
     rank = 1
     rss.items.map{ |rss_news|
-      news = News.new(:title => rss_news.title, :url => rss_news.link,:description => rss_news.description,:rank => rank,:last_ranking => last_ranking)
+      hpri_description = Hpricot(rss_news.description)
+      news = News.new(:title => rss_news.title, :url => rss_news.link,:description => hpri_description.search("p.description").first.inner_text,\
+      :rank => rank,:thumbnail_url => hpri_description.search("p.thumbnail img").first["src"],:last_ranking => last_ranking)
       ranking.news << news
       news.save
       rank += 1
     }
     ranking.save
   end
+  
+  private
+  def self.create_descriptiontext_contain_thumbnail(thumbnail_src,description)
+    thumbnail_tag = '<p class="thumbnail">' + '<img alt="noimage" height="70" width="94" src=' + thumbnail_src +'>' +'<p>'
+    description_tag = '<p class="description">' + description + '</p>'
+    return "![CDATA[" + thumbnail_tag + description_tag + "]]"
+  end
+  private_class_method :create_descriptiontext_contain_thumbnail
 end
-binding.pry
-#RankingCrawler.create_rss
-#RankingCrawler.save_rss_to_db
+
+RankingCrawler.create_rss
+RankingCrawler.save_rss_to_db
