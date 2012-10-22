@@ -11,6 +11,9 @@ require "active_record"
 require_relative "./../app/models/news"
 require_relative "./../app/models/ranking.rb"
 
+TOPSELLING_FREE = "topselling_free"
+TOPSELLING_PAID = "topselling_paid"
+
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 $root_directory_path = File.expand_path(__FILE__)[0..File.expand_path(__FILE__).rindex("/")] + "../"
 
@@ -22,8 +25,21 @@ ActiveRecord::Base.establish_connection(
 )
 
 class RankingCrawler < ActiveRecord::Base
-  def self.create_rss
-    rank_in_apps = Hpricot(open("https://play.google.com/store/apps/collection/topselling_free")).search("ul.snippet-list li.goog-inline-block")
+  def self.create_rss(ranking_type)
+    playranking_url = "https://play.google.com/store/apps/collection/"
+    if ranking_type == TOPSELLING_FREE
+      playranking_url += "topselling_free"
+      channel_description_text = "Androidの無料のRankingのRSS"
+      rss_file_name = "topselling_free_rss.xml"
+    elsif ranking_type == TOPSELLING_PAID
+      playranking_url += "topselling_paid"
+      channel_description_text = "Androidの有料のRankingのRSS"
+      rss_file_name = "topselling_paid_rss.xml"
+    elsif
+      p "ERROR:Unknown ranking_type"
+      return -1
+    end
+    rank_in_apps = Hpricot(open(playranking_url)).search("ul.snippet-list li.goog-inline-block")
     
     rss = REXML::Document.new 
     rss << REXML::XMLDecl.new('1.0', 'UTF-8') 
@@ -31,8 +47,8 @@ class RankingCrawler < ActiveRecord::Base
     
     channel = REXML::Element.new("channel")
     channel.add_element("title").add_text "Android Ranking"
-    channel.add_element("link").add_text "https://play.google.com/store/apps/collection/topselling_free"
-    channel.add_element("description").add_text "AndroidのRankingのRSS"
+    channel.add_element("link").add_text playranking_url
+    channel.add_element("description").add_text channel_description_text
     
     rank_in_apps.each do |rank_in_app|
       elem = rank_in_app.search("a.title").first
@@ -41,18 +57,28 @@ class RankingCrawler < ActiveRecord::Base
       item.add_element("link").add_text "https://play.google.com" + elem["href"]
       item.add_element("description").add_text create_descriptiontext_contain_thumbnail(rank_in_app.search(".thumbnail img").first["src"],rank_in_app.search("p.snippet-content").text)
     end
-    binding.pry
     rss.elements["rss"].add_element(channel)
 
-    output_file = File.open($root_directory_path + "public/android_rss.xml", "w")
+    output_file = File.open($root_directory_path + "public/" + rss_file_name, "w")
     output_file.write(rss.to_s)
     output_file.close
   end
   
-  def self.save_rss_to_db
-    rss = RSS::Parser.parse("public/android_rss.xml")
+  def self.save_rss_to_db(ranking_type)
+    if ranking_type == TOPSELLING_FREE
+      rss_file_name = "topselling_free_rss.xml"
+      genre_name = "topselling_free"
+    elsif ranking_type == TOPSELLING_PAID
+      rss_file_name = "topselling_paid_rss.xml"
+      genre_name = "topselling_paid"
+    else
+      p "ERROR:Unknown ranking_type"
+      return -1
+    end
+    
+    rss = RSS::Parser.parse("public/" + rss_file_name)
     last_ranking = Ranking.last
-    ranking = Ranking.new(:genre => nil)
+    ranking = Ranking.new(:genre => genre_name)
     rank = 1
     rss.items.map{ |rss_news|
       hpri_description = Hpricot(rss_news.description)
@@ -74,5 +100,7 @@ class RankingCrawler < ActiveRecord::Base
   private_class_method :create_descriptiontext_contain_thumbnail
 end
 
-RankingCrawler.create_rss
-RankingCrawler.save_rss_to_db
+RankingCrawler.create_rss(TOPSELLING_FREE)
+RankingCrawler.save_rss_to_db(TOPSELLING_FREE)
+RankingCrawler.create_rss(TOPSELLING_PAID)
+RankingCrawler.save_rss_to_db(TOPSELLING_PAID)

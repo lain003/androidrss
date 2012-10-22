@@ -1,7 +1,7 @@
 Androidrss::Application.routes.draw do
-  resources :rankings
+  resources :rankings,:only=>["index","show"]
 
-  resources :news
+  resources :news,:only=>["index","show"]
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
