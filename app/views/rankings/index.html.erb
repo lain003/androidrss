@@ -1,4 +1,11 @@
 <div class="row-fluid">
+	<div class="span1">
+		<table>
+			<tr>
+				<td><div id="calender"></div></td>
+			</tr>
+		</table>
+	</div>
 	<div class="span8 offset2">
 		<ul class="nav nav-tabs">
 			<li class="active">
@@ -19,4 +26,25 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+	//<![CDATA[
+	var now = new Date();
+
+	var cal = Calendar.setup({
+		cont : "calender",
+		date : now,
+		onSelect : updateFields,
+		onTimeChange : updateFields
+	});
+
+	function updateFields(cal) {
+		var date = cal.selection.get();
+		if(date){
+			date = Calendar.intToDate(date);
+			window.location.href="/rankings?date=" + Calendar.printDate(date, "%Y/%m/%d");
+		}
+	};
+	//]]>
+</script>
 

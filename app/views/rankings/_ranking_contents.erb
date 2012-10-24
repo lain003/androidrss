@@ -1,11 +1,14 @@
 <table class="table table-striped">
-	<% rankings.news.each do |news| %>
-	<tr>
-		<td><%= image_tag(news.get_changerank_icon,:size=>"60x60") %></td>
-		<td><%= news.rank %>位</td>
-		<td><%= image_tag (news.thumbnail_url) %></td>
-		<td><%= link_to news.title, news.url %></td>
-		<td><%= news.description %></td>
-	</tr>
+	<% if rankings %>
+		<% rankings.news.each do |news| %>
+		<tr>
+			<td><%= image_tag(news.get_changerank_icon,:size=>"60x60") %></td>
+			<td><%= news.rank %>位</td>
+			<td><%= image_tag (news.thumbnail_url) %></td>
+			<td><%= link_to news.title, news.url %></td>
+			<td><%= news.description %></td>
+		</tr>
+		<% end %>
 	<% end %>
+
 </table>

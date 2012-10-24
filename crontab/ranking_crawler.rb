@@ -77,7 +77,7 @@ class RankingCrawler < ActiveRecord::Base
     end
     
     rss = RSS::Parser.parse("public/" + rss_file_name)
-    last_ranking = Ranking.last
+    last_ranking = Ranking.where(:genre => genre_name).last
     ranking = Ranking.new(:genre => genre_name)
     rank = 1
     rss.items.map{ |rss_news|
