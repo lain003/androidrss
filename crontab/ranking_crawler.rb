@@ -15,11 +15,13 @@ TOPSELLING_FREE = "topselling_free"
 TOPSELLING_PAID = "topselling_paid"
 
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
-$root_directory_path = File.expand_path(__FILE__)[0..File.expand_path(__FILE__).rindex("/")] + "../"
+#$root_directory_path = File.expand_path(__FILE__)[0..File.expand_path(__FILE__).rindex("/")] + "../"
+ROOT_DEIRECTORY_PATH = File.expand_path(__FILE__)[0..File.expand_path(__FILE__).rindex("/")] + "../"
+ROOT_DEIRECTORY_PATH.untaint
 
 ActiveRecord::Base.establish_connection(    
   :adapter => "sqlite3",
-  :database => $root_directory_path + "db/development.sqlite3",
+  :database => ROOT_DEIRECTORY_PATH + "db/development.sqlite3",
   :pool => 5,
   :timeout => 5000
 )
@@ -59,7 +61,7 @@ class RankingCrawler < ActiveRecord::Base
     end
     rss.elements["rss"].add_element(channel)
 
-    output_file = File.open($root_directory_path + "public/" + rss_file_name, "w")
+    output_file = File.open(ROOT_DEIRECTORY_PATH + "public/" + rss_file_name, "w")
     output_file.write(rss.to_s)
     output_file.close
   end
@@ -76,7 +78,7 @@ class RankingCrawler < ActiveRecord::Base
       return -1
     end
     
-    rss = RSS::Parser.parse("public/" + rss_file_name)
+    rss = RSS::Parser.parse(ROOT_DEIRECTORY_PATH + "public/" + rss_file_name)
     last_ranking = Ranking.where(:genre => genre_name).last
     ranking = Ranking.new(:genre => genre_name)
     rank = 1
@@ -99,6 +101,7 @@ class RankingCrawler < ActiveRecord::Base
   end
   private_class_method :create_descriptiontext_contain_thumbnail
 end
+
 
 RankingCrawler.create_rss(TOPSELLING_FREE)
 RankingCrawler.save_rss_to_db(TOPSELLING_FREE)
