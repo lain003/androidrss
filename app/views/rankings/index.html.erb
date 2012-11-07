@@ -42,7 +42,7 @@
 		var date = cal.selection.get();
 		if(date){
 			date = Calendar.intToDate(date);
-			window.location.href="/rankings?date=" + Calendar.printDate(date, "%Y/%m/%d");
+			window.location.href="<% request.path_info %>" + "?date=" + Calendar.printDate(date, "%Y/%m/%d");
 		}
 	};
 	//]]>
