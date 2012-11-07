@@ -13,3 +13,6 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+public/topselling_free_rss.xml
+public/topselling_paid_rss.xml
